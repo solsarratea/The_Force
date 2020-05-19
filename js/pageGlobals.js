@@ -1,9 +1,8 @@
-
-
 var mCanvas = null, aCanvas = null;
 var  gl = null;
 var mAudioContext = null;
-
+var mVideo = null;
+var mVideoReady = false;
 var mMousePosX = mMousePosY = 0;
 var mMouseClickX = mMouseClickY = 0;
 
@@ -568,6 +567,8 @@ $( document ).ready(function()
             destroyInput(slotID);
             var texture = {};
 
+            console.log("event", event.target)
+
             switch (event.target.id)
             {
                 case "tex_none":
@@ -695,7 +696,57 @@ $( document ).ready(function()
                         createGLTextureNearest(gl, texture.image, texture.globject);
                         texture.loaded = true;
                     }
-                    texture.image.src = 'presets/nyan.png';
+                texture.image.src = 'presets/nyan.png';
+                case "tex_video":
+                    texture.type = "tex_video";
+                    texture.globject = gl.createTexture();
+                    mVideo  = document.createElement("video");
+                    mVideo.autoplay = true;
+		mVideo.loop = true;
+                mVideo.muted = true;
+                    texture.image = mVideo;
+                    $("#"+whichSlot)
+                        .attr('src', 'presets/previz/video.png')
+                        .animate(
+                            {
+                                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                            }, .250 );
+
+                whichSlot = "";
+
+                texture.image.oncanplay = function()
+                {
+                    console.log("loading video..");
+                    console.log(texture.image);
+                    createVideoTexture(gl, texture.globject ,texture.image);
+                    mVideoReady = true;
+                };
+
+                texture.image.onerror = function() {
+                    var err = "unknown error";
+
+			switch(video.error.code)
+			{
+				case 1: err = "video loading aborted"; break;
+				case 2: err = "network loading error"; break;
+				case 3: err = "video decoding failed / corrupted data or unsupported codec"; break;
+				case 4: err = "video not supported"; break;
+			};
+
+			log("Error: " + err + " (errorcode="+video.error.code+")", "color:red;");
+		};
+
+                texture.image.src = 'presets/video.mp4';
+
+                // try to disable the iPhone video fullscreen mode:
+		texture.image.setAttribute("playsinline", "");
+		texture.image.setAttribute("webkit-playsinline", "");
+
+		// try to start playing
+		texture.image.play();
+
+
+
             }
 
             mInputs[slotID] = texture;

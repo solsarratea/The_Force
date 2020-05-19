@@ -583,9 +583,10 @@ function paint() {
         } else if (inp.type == "tex_webcam"){
             gl.bindTexture(gl.TEXTURE_2D, inp.globject);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
+        }else if (inp.type == "tex_video"){
+            gl.bindTexture(gl.TEXTURE_2D, inp.globject);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
 
         }
     }
