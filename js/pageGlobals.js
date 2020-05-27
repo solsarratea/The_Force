@@ -6,6 +6,8 @@ var mVideoReady = false;
 var mMousePosX = mMousePosY = 0;
 var mMouseClickX = mMouseClickY = 0;
 
+var videoSrc = 'https://scontent-lga3-1.cdninstagram.com/v/t50.2886-16/98197641_2716131278497127_6527171451800627564_n.mp4?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=111&_nc_ohc=m82M5U84LrAAX9hWgzn&oe=5ED0E4E6&oh=2887ab8b7d1aee1ef0f65c8a18f43d96';
+
 //interface
 var mIsPaused = false;
 var mFpsFrame = 0.0;
@@ -702,8 +704,9 @@ $( document ).ready(function()
                     texture.globject = gl.createTexture();
                     mVideo  = document.createElement("video");
                     mVideo.autoplay = true;
-		mVideo.loop = true;
-                mVideo.muted = true;
+                    mVideo.loop = true;
+                    mVideo.muted = true;
+                    mVideo.crossOrigin="anonymous";
                     texture.image = mVideo;
                     $("#"+whichSlot)
                         .attr('src', 'presets/previz/video.png')
@@ -715,11 +718,14 @@ $( document ).ready(function()
                 whichSlot = "";
 
                 texture.image.oncanplay = function()
-                {
-                    console.log("loading video..");
-                    console.log(texture.image);
-                    createVideoTexture(gl, texture.globject ,texture.image);
-                    mVideoReady = true;
+                {  
+                    if(!mVideoReady){
+                        console.log("loading video..");
+                        console.log(texture.image);
+                        createVideoTexture(gl, texture.globject ,texture.image);
+                        mVideoReady = true;
+
+                    }
                 };
 
                 texture.image.onerror = function() {
@@ -736,7 +742,7 @@ $( document ).ready(function()
 			log("Error: " + err + " (errorcode="+video.error.code+")", "color:red;");
 		};
 
-                texture.image.src = 'presets/video.mp4';
+                texture.image.src = videoSrc;
 
                 // try to disable the iPhone video fullscreen mode:
 		texture.image.setAttribute("playsinline", "");
