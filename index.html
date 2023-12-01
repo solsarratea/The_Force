@@ -24,6 +24,12 @@
     <script type="text/javascript" src="js/myMIDI.js"></script>
     <script type="text/javascript" src="js/customCompletions.js"></script>
     <script type="text/javascript" src="js/pageGlobals.js"></script>
+    <script type="module">
+      import { fairyDustCursor } from "./lib/cursorEffect.js";
+      new fairyDustCursor({
+        colors: ["#ffbbff", "#bbffff", "#fbfbbb"],
+      });
+    </script>
 </head>
 
 <body>
@@ -483,6 +489,8 @@ ft     = float
                     <option value="16">16</option>
                     <option value="18">18</option>
                     <option value="24">24</option>
+                    <option value="36">36</option>
+                    <option value="48">48</option>
                 </select>
             </div>
             <input type="submit" id="audioButton" value="" class="uiButton" title="Audio Input" />

@@ -362,3 +362,248 @@ vec2 nyanFrame(vec2 p, float rr) {
     p.x += fr*v;
     return p;
 }
+
+float saturate(float s) {
+  return clamp(s, 0., 1.);
+}
+
+float distanceToLine(vec3 origin, vec3 dir, vec3 point) {
+	vec3 pointToOrigin = point - origin;
+    float pointToOriginLength = length(pointToOrigin);
+    vec3 pointToOriginNorm = normalize(pointToOrigin);
+    float theta = dot(dir, pointToOriginNorm);
+    return pointToOriginLength * sqrt(1. - theta * theta);
+}
+
+float invert(float m) {
+  return 1.0 / m;
+}
+
+mat2 invert(mat2 m) {
+  return mat2(m[1][1],-m[0][1],
+             -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);
+}
+
+mat3 invert(mat3 m) {
+  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];
+  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];
+  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];
+
+  float b01 = a22 * a11 - a12 * a21;
+  float b11 = -a22 * a10 + a12 * a20;
+  float b21 = a21 * a10 - a11 * a20;
+
+  float det = a00 * b01 + a01 * b11 + a02 * b21;
+
+  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),
+              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),
+              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;
+}
+
+mat4 invert(mat4 m) {
+  float
+      a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],
+      a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],
+      a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],
+      a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],
+
+      b00 = a00 * a11 - a01 * a10,
+      b01 = a00 * a12 - a02 * a10,
+      b02 = a00 * a13 - a03 * a10,
+      b03 = a01 * a12 - a02 * a11,
+      b04 = a01 * a13 - a03 * a11,
+      b05 = a02 * a13 - a03 * a12,
+      b06 = a20 * a31 - a21 * a30,
+      b07 = a20 * a32 - a22 * a30,
+      b08 = a20 * a33 - a23 * a30,
+      b09 = a21 * a32 - a22 * a31,
+      b10 = a21 * a33 - a23 * a31,
+      b11 = a22 * a33 - a23 * a32,
+
+      det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+  return mat4(
+      a11 * b11 - a12 * b10 + a13 * b09,
+      a02 * b10 - a01 * b11 - a03 * b09,
+      a31 * b05 - a32 * b04 + a33 * b03,
+      a22 * b04 - a21 * b05 - a23 * b03,
+      a12 * b08 - a10 * b11 - a13 * b07,
+      a00 * b11 - a02 * b08 + a03 * b07,
+      a32 * b02 - a30 * b05 - a33 * b01,
+      a20 * b05 - a22 * b02 + a23 * b01,
+      a10 * b10 - a11 * b08 + a13 * b06,
+      a01 * b08 - a00 * b10 - a03 * b06,
+      a30 * b04 - a31 * b02 + a33 * b00,
+      a21 * b02 - a20 * b04 - a23 * b00,
+      a11 * b07 - a10 * b09 - a12 * b06,
+      a00 * b09 - a01 * b07 + a02 * b06,
+      a31 * b01 - a30 * b03 - a32 * b00,
+      a20 * b03 - a21 * b01 + a22 * b00) / det;
+}
+
+mat4 scale(vec3 s) {
+  return invert(mat4(
+    s.x, 0., 0., 0.,
+    0., s.y, 0., 0.,
+    0., 0., s.z, 0.,
+    0., 0., 0., 1.
+  ));
+}
+
+mat4 rotateX(float angle) {
+  return invert(mat4(
+    1., 0., 0., 0.,
+    0., cos(angle), -sin(angle), 0.,
+    0., sin(angle), cos(angle), 0.,
+    0., 0., 0., 1.
+  ));
+}
+
+mat4 rotateY(float angle) {
+  return invert(mat4(
+    cos(angle), 0., sin(angle), 0.,
+    0., 1., 0., 0.,
+    -sin(angle), 0., cos(angle), 0.,
+    0., 0., 0., 1.
+  ));
+}
+
+mat4 rotateZ(float angle) {
+  return invert(mat4(
+    cos(angle), -sin(angle), 0., 0.,
+    sin(angle), cos(angle), 0., 0.,
+    0., 0., 1., 0.,
+    0., 0., 0., 1.
+  ));
+}
+
+mat4 translate(vec3 p) {
+  return invert(mat4(
+    1., 0., 0., p.x,
+    0., 1., 0., p.y,
+    0., 0., 1., p.z,
+    0., 0., 0., 1.
+  ));
+}
+
+float sdSphere(vec3 p, float size) {
+  return length(p) - size;
+}
+
+float tube2(vec2 p, float size) {
+  return length(p) - size;
+}
+
+float cylindar(vec3 p, vec3 c) {
+  return length(p.xz - c.xy) - c.z;
+}
+
+float displacement(vec3 p, vec3 power) {
+  return sin(power.x * p.x) * sin(power.y * p.y) * sin(power.z * p.z);
+}
+
+vec3 repeat(vec3 p, float c) {
+  return mod(p, c) - c * .5;
+}
+
+float smin( float a, float b, float k )
+{
+    float h = max(k-abs(a-b),0.0);
+    return min(a, b) - h*h*0.25/k;
+}
+
+vec2 smin( vec2 a, vec2 b, float k )
+{
+    float h = clamp( 0.5+0.5*(b.x-a.x)/k, 0.0, 1.0 );
+    return mix( b, a, h ) - k*h*(1.0-h);
+}
+
+float smax( float a, float b, float k )
+{
+    float h = max(k-abs(a-b),0.0);
+    return max(a, b) + h*h*0.25/k;
+}
+
+#define FLOAT_MAX 3.402823466e+38
+#define FLOAT_MIN 1.175494351e-38
+#define DBL_MAX 1.7976931348623158e+308
+#define DBL_MIN 2.2250738585072014e-308
+
+float sdElipsoide(vec3 pos,vec3 r){
+
+    float k0 = length(pos/r) ;
+    float k1 = length(pos/r/r) ;
+
+    return k0*(k0-1.)/k1;
+}
+
+vec3 repeat(vec3 p, vec3 c) {
+	return mod(p, c) - 0.5 * c;
+}
+
+
+float plength(vec3 pos, float p){
+    return pow(pow(abs(pos.x),p)+pow(abs(pos.y),p)+pow(abs(pos.z),p),1./p);
+}
+
+float luma(vec3 color) { return dot(color, vec3(0.299, 0.587, 0.114)); }
+
+vec3 colorSaturate(vec3 cin, float amount) {
+  const vec3 W = vec3(0.2125, 0.7154, 0.0721);
+  vec3 intensity = vec3(dot(cin.rgb, W));
+  return mix(intensity, cin.rgb, amount);
+}
+
+float bpm(float bpm, float q, float intensity){
+ float bps = 60./bpm; // beats por segundo
+ float bpmVis = tan((time*PI/q)/bps);
+ return max(min(abs(bpmVis),1.),0.) * intensity;
+}
+
+float bpmd(float val){
+  return step(0.5, bpm(val,1.,1.));
+}
+
+mat3 rotateX3(float rotation) {
+    mat3 rotateX = mat3(
+        1.0, 0.0, 0.0,
+    0.0, cos(rotation), -sin(rotation),
+    0.0, sin(rotation), cos(rotation)
+    );
+
+    return rotateX;
+}
+
+mat3 rotateY3(float rotation) {
+mat3 rotateY = mat3(
+        cos(rotation), 0.0, sin(rotation),
+    0.0, 1.0, 0.0,
+    -sin(rotation), 0.0, cos(rotation)
+    );
+
+    return rotateY;
+}
+
+mat3 rotateZ3(float rotation) {
+    mat3 rotateZ = mat3(
+        cos(rotation), -sin(rotation), 0.0,
+    sin(rotation), cos(rotation), 0.0,
+    0.0, 0.0, 1.0
+    );
+
+    return rotateZ;
+}
+
+
+void pR(inout vec2 p, float a) {
+    p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
+}
+
+void moda (inout vec2 p, float rep)
+{
+  float per = 2.*PI/rep;
+  float a = atan(p.y,p.x);
+  float l = length(p);
+  a = mod(a,per)-per*0.1;
+  p = vec2(cos(a),sin(a))*l;
+}
