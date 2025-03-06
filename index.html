@@ -13,26 +13,32 @@
     <script type="text/javascript" src="lib/jquery-ui.min.js"></script>
     <script type="text/javascript" src="lib/fpsmeter.js"></script>
     <script type="text/javascript" src="lib/ace/ace.js"></script>
+    <script type="text/javascript" src="lib/ace/ext-searchbox.js"></script>
     <script type="text/javascript" src="lib/ace/ext-language_tools.js"></script>
     <script type="text/javascript" src="lib/ace/ext-static_highlight.js"></script>
     <script type="text/javascript" src="lib/FileSaver.js"></script>
     <script type="text/javascript" src="lib/canvas-toBlob.js"></script>
     <script type="text/javascript" src="lib/osc.js"></script>
     <script src="https://connect.soundcloud.com/sdk.js"></script>
+    <script type="text/javascript" src="js/drawingCanvas.js"></script>
     <script type="text/javascript" src="js/openGL.js"></script>
     <script type="text/javascript" src="js/oscManager.js"></script>
     <script type="text/javascript" src="js/myMIDI.js"></script>
     <script type="text/javascript" src="js/customCompletions.js"></script>
     <script type="text/javascript" src="js/pageGlobals.js"></script>
+
     <script type="module">
-      import { fairyDustCursor } from "./lib/cursorEffect.js";
-      new fairyDustCursor({
-        colors: ["#ffbbff", "#bbffff", "#fbfbbb"],
-      });
+        import { fairyDustCursor } from "./lib/cursorEffect.js";
+        new fairyDustCursor({
+            colors: ["#ffbbff", "#bbffff", "#fbfbbb"],
+        });
     </script>
 </head>
 
 <body>
+    <div id="drawingCanvas">
+        <canvas id="drawingCanvasCanvas"></canvas>
+    </div>
     <!-- editor =================================================================================== -->
     <div id="editor"></div>
     <!-- audio =================================================================================== -->
@@ -85,8 +91,9 @@
     <!-- textures =================================================================================== -->
     <div id="texturePanel" title="Textures">
         <button id="uploadCustomTexture">Upload Custom Texture</button>
-        <input type="file" id="uploadCustomTextureFile" class="hide" multiple/>
-        <div id="maxCustomTextureSourcesReachedMessage" class="hide">Texture slots are full, can't add new custom textures</div>
+        <input type="file" id="uploadCustomTextureFile" class="hide" multiple />
+        <div id="maxCustomTextureSourcesReachedMessage" class="hide">Texture slots are full, can't add new custom
+            textures</div>
         <div class="texTable">
             <div class="tRow">
                 <div class="texCell">
@@ -241,11 +248,11 @@
                 <p>Sending to - localhost:7600</p>
                 <p>Direct Message</p>
                 <div>
-                <form id="myConsole">
-                <input type="text" id="consoleMessage" value="/out"/>
-                <input type="text" id="consoleValue" value=".9"/>
-                <input type="text" id="consoleLine" value="0"/>
-                </form>
+                    <form id="myConsole">
+                        <input type="text" id="consoleMessage" value="/out" />
+                        <input type="text" id="consoleValue" value=".9" />
+                        <input type="text" id="consoleLine" value="0" />
+                    </form>
                 </div>
                 <p>Auto Messages</p>
                 <div id="myOutputs">
@@ -257,12 +264,12 @@
             <div id="networkTabs-2">
                 <div id="selectMIDIInDIV" class="uiButton" title="MIDI Input">
                     <select id="selectMIDIIn">
-                    <option>null</option>
+                        <option>null</option>
                     </select>
                 </div>
                 <div id="selectMIDIOutDIV" class="uiButton" title="MIDI Output">
                     <select id="selectMIDIOut">
-                    <option>null</option>
+                        <option>null</option>
                     </select>
                 </div>
                 <br />
@@ -510,6 +517,11 @@ ft     = float
             <input type="submit" id="funcButton" value="" class="uiButton" title="Function Reference" />
             <input type="checkbox" id="myFullScreen" value="" />
             <label for="myFullScreen" class="uiButton" title="Toggle Fullscreen"></label>
+
+            <input type="checkbox" id="drawingCanvasFooter" value="" />
+            <label for="drawingCanvasFooter" class="uiButton" title="Drawing Canvas"></label>
+
+
         </div>
     </div>
     <!-- video =================================================================================== -->

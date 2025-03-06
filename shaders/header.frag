@@ -9,6 +9,7 @@ uniform vec3      channelResolution[4];
 uniform vec4      bands;
 uniform vec4      bandsTime;
 uniform sampler2D backbuffer;
+uniform sampler2D channel0;
 
 float PI = 3.14159;
 float PI2 = 6.28318;
@@ -502,10 +503,6 @@ float displacement(vec3 p, vec3 power) {
   return sin(power.x * p.x) * sin(power.y * p.y) * sin(power.z * p.z);
 }
 
-vec3 repeat(vec3 p, float c) {
-  return mod(p, c) - c * .5;
-}
-
 float smin( float a, float b, float k )
 {
     float h = max(k-abs(a-b),0.0);
@@ -537,9 +534,7 @@ float sdElipsoide(vec3 pos,vec3 r){
     return k0*(k0-1.)/k1;
 }
 
-vec3 repeat(vec3 p, vec3 c) {
-	return mod(p, c) - 0.5 * c;
-}
+
 
 
 float plength(vec3 pos, float p){
@@ -606,4 +601,32 @@ void moda (inout vec2 p, float rep)
   float l = length(p);
   a = mod(a,per)-per*0.1;
   p = vec2(cos(a),sin(a))*l;
+}
+
+
+float sdBox(vec3 p, vec3 s) {
+  p=abs(p)-s;
+  return max(p.x, max(p.y,p.z));
+}
+
+
+vec3 round(vec3 p){
+    vec3 r; vec3 f = floor(p);
+    r.x= mix(f.x, f.x+1., step(0.5, fract(p.x)));
+    r.y= mix(f.y, f.y+1., step(0.5, fract(p.y)));
+    r.z= mix(f.z, f.z+1., step(0.5, fract(p.z)));
+    
+    return r;
+    
+}
+
+
+#define repeatLimit(p,c,l) p=p-c*clamp(round(p/c),-l,l)
+
+void repeat(inout vec3 p, float c) {
+  p = mod(p, c) - c * .5;
+}
+
+void repeat(inout vec3 p, vec3 c) {
+	p = mod(p, c) - 0.5 * c;
 }

@@ -1,14 +1,25 @@
-# taken from http://www.piware.de/2011/01/creating-an-https-server-in-python/
-# generate server.xml with the following command:
-#    openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
-# run as follows:
-#    python simple-https-server.py
-# then in your browser, visit:
-#    https://localhost:4443
-
-import BaseHTTPServer, SimpleHTTPServer
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 import ssl
+import os
 
-httpd = BaseHTTPServer.HTTPServer(('localhost', 4443), SimpleHTTPServer.SimpleHTTPRequestHandler)
-httpd.socket = ssl.wrap_socket (httpd.socket, certfile='server.pem', server_side=True)
+HOST = 'localhost'
+PORT = 4443
+CERT_FILE = 'server+5.pem'  # Your mkcert certificate
+KEY_FILE = 'server+5-key.pem'  # Your mkcert private key
+
+# Check if cert and key files exist
+if not os.path.exists(CERT_FILE) or not os.path.exists(KEY_FILE):
+    raise FileNotFoundError(f"SSL certificate or key not found. Please generate them using mkcert.")
+
+# Create HTTP server
+httpd = HTTPServer((HOST, PORT), SimpleHTTPRequestHandler)
+
+# Create SSL context
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+context.load_cert_chain(certfile=CERT_FILE, keyfile=KEY_FILE)
+
+# Wrap socket using SSL context
+httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+
+print(f"Serving HTTPS on {HOST}:{PORT}")
 httpd.serve_forever()
