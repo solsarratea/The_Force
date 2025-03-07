@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>- - --== The Force ==-- - -</title>
+    <title>- - --== The { Bloby } Force ==-- - -</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="icon" href="img/favicon.png">
@@ -313,7 +313,8 @@
                 <li><a href="#tabsHelp-4">Math</a></li>
                 <li><a href="#tabsHelp-5">GL</a></li>
                 <li><a href="#tabsHelp-6">Snippets</a></li>
-                <li><a href="#tabsHelp-7">Info</a></li>
+                <li><a href="#tabsHelp-7">Blob Helpers</a></li>
+                <li><a href="#tabsHelp-8">Info</a></li>
             </ul>
             <div id="tabsHelp-1">
                 <pre class="codeHighlight" ace-mode="ace/mode/glsl" ace-theme="ace/theme/monokai">
@@ -344,6 +345,7 @@ date            = vec4();
 <!-- channelResolution[4]  -->
 bands           = vec4(low, mid-low, mid-high, high) // FFT results
 backbuffer      = texture2D; // previous render frame
+channel0        = texture2D; // texture of the drawingCanvas
                 </pre>
             </div>
             <div id="tabsHelp-3">
@@ -465,9 +467,31 @@ ft     = float
             </div>
             <div id="tabsHelp-7">
                 <pre class="codeHighlight" ace-mode="ace/mode/glsl" ace-theme="ace/theme/monokai">
-// Created by: Shawn Lawson, http://shawnlawson.com
+repeat(inout vec3 p, vec3 c)                // c is amount
+repeat(inout vec3 p,  float c)/             // c is amount    
+repeatLimit(inout vec3 p, float c, float l) // c is amount, l is limit
 
-// Github Respository: https://github.com/shawnlawson/The_Force
+pR(inout vec2 pl, float a)                  // rotation of angle a in relation
+                                            // to the plane pl
+bpm(float b, float o, float a)              // continous aproximation of "bpm"
+                                            // o is freq, a is amplitude/intensity
+bpmd(float b)                               // discrete "bpm"
+
+plength(vec3 p, float p)                    // pdistance of p with value p
+moda (inout vec2 p, float rep)              // modular angular repetition
+displacement(vec3 p, vec3 power)            // displacement of p with power
+
+                </pre>
+            </div>
+            <div id="tabsHelp-8">
+                <pre class="codeHighlight" ace-mode="ace/mode/glsl" ace-theme="ace/theme/monokai">
+// Created by: Shawn Lawson, http://shawnlawson.com
+// Github Respository:
+//     https://github.com/shawnlawson/The_Force
+
+//This is a remix version for supporting 
+//drawing canvas and some other features
+// By Sol Sarratea https://solsarratea.world/
 
                 </pre>
             </div>
@@ -491,10 +515,10 @@ ft     = float
             <div id="selectFontSizeDIV" class="uiButton" title="Text Size">
                 <select id="selectFontSize">
                     <option value="10">10</option>
-                    <option value="12" selected="selected">12</option>
+                    <option value="12">12</option>
                     <option value="14">14</option>
                     <option value="16">16</option>
-                    <option value="18">18</option>
+                    <option value="18" selected="selected">18</option>
                     <option value="24">24</option>
                     <option value="36">36</option>
                     <option value="48">48</option>

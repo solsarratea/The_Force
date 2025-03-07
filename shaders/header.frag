@@ -534,9 +534,6 @@ float sdElipsoide(vec3 pos,vec3 r){
     return k0*(k0-1.)/k1;
 }
 
-
-
-
 float plength(vec3 pos, float p){
     return pow(pow(abs(pos.x),p)+pow(abs(pos.y),p)+pow(abs(pos.z),p),1./p);
 }
@@ -550,8 +547,9 @@ vec3 colorSaturate(vec3 cin, float amount) {
 }
 
 float bpm(float bpm, float q, float intensity){
+ float tt = mod(time,500.);
  float bps = 60./bpm; // beats por segundo
- float bpmVis = tan((time*PI/q)/bps);
+ float bpmVis = tan((tt*PI/q)/bps);
  return max(min(abs(bpmVis),1.),0.) * intensity;
 }
 

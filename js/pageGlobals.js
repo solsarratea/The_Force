@@ -1165,9 +1165,9 @@ $(document).ready(function () {
 
   //--------------------- HELP PANEL ------------
   $("#helpPanel").dialog({
-    minWidth: 600,
+    minWidth: 800,
     minHeight: 200,
-    maxHeight: 400,
+    maxHeight: 600,
     autoOpen: false,
     show: {
       effect: "clip",
